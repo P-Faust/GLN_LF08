@@ -1,5 +1,4 @@
-import computer, socket, psutil, platform
-
+import computer, socket, psutil, sys, platform, cpuinfo
 class Server(computer.Computer):
     _service = ""
     __sockIp = ""
@@ -20,14 +19,17 @@ class Server(computer.Computer):
             s.listen()
             conn, addr = s.accept()
             with conn:
-                print(f"Connected by {addr}")
+                print(f"\nEingehende Verbindung von {addr}")
                 while True:
                     data = conn.recv(1024)
-                    if not data:
+                    client_msg = data.decode()
+                    print(f"Client send: {client_msg}")
+                    conn.send(f"Datenpaket mit {len(client_msg.encode('utf-8'))} byte erhalten".encode())
+                    if client_msg == "shutdown":
                         break
-                    conn.sendall(data)
-    
-myServer = Server("750W", platform.processor(), psutil.cpu_freq().max, psutil.virtual_memory().total, platform.system(), socket.gethostbyname(socket.gethostname()), "File Server")
+                s.close()
+                
+myServer = Server("750W", cpuinfo.get_cpu_info()['brand_raw'], psutil.cpu_freq().max, psutil.virtual_memory().total, platform.system(), socket.gethostbyname(socket.gethostname()), "TCP-Socket Server")
 myServer.getInfo()
 print(f"Service: {myServer._service}")
 myServer.createSocket("127.0.0.1", 6420)

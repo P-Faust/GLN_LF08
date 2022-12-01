@@ -1,4 +1,4 @@
-import platform, psutil, socket
+import platform, psutil, socket, cpuinfo
 
 class Computer():
     
@@ -13,7 +13,7 @@ class Computer():
         self.powerSupply = power_supply
         self._cpu = cpu
         self._cpuSpeed = str(cpu_speed) + " MHz"
-        self._ram = str(ram)[:2] + " Gb" 
+        self._ram = str(ram)[:2] + " GB" 
         self._os = os
         self._ip = ip
         
