@@ -1,13 +1,16 @@
 import computer, socket, psutil, platform, cpuinfo
+
+#Erstelle Klasse Client und erbe von Klasse Computer
 class Client(computer.Computer):
     __remoteIP = ""
     __remotePort = 0
-
+    #Legt die Werte für sen Socket fest
     def createSocket(self, remoteIP, remotePort):
         self.__remoteIP = remoteIP
         self.__remotePort = remotePort
         print(f"Remote-IP: {myClient.__remoteIP}\nRemote-Port: {myClient.__remotePort}")
-    
+
+    #Verbindet sich mit dem Socket und sendet Daten
     def sendData(self):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             usr_msg = ""
@@ -31,7 +34,7 @@ class Client(computer.Computer):
 
 myClient = Client("750W", cpuinfo.get_cpu_info()['brand_raw'], psutil.cpu_freq().max, psutil.virtual_memory().total, platform.system(), socket.gethostbyname(socket.gethostname()))
 myClient.getInfo()
-myClient.createSocket("127.0.0.1", 6420)
+myClient.createSocket("127.0.0.1", 1337)
 try:
     myClient.sendData()
 except:
