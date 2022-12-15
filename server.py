@@ -9,16 +9,22 @@ class Server(computer.Computer):
         self._service = service
         
     def createSocket(self, sockIP,sockPort):
-        self.__sockIp = sockIP
-        self.__sockPort = sockPort
-        print(f"Socket IP: {(str(self.__sockIp))}\nPort: {self.__sockPort}")
-        
+        try:
+            self.__sockIp = sockIP
+            self.__sockPort = sockPort
+            web_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            web_socket.bind((self.__sockIp, self.__sockPort))
+            self.__sock = web_socket
+            print(f"Socket IP: {(str(self.__sockIp))}\nPort: {self.__sockPort}")
+        except Exception as error:
+            print(f"Fehler bei erstellung des Sockets: {error}]")
+
     # Startet den Server und sendet nach erhalt der Daten die Größe in Byte zurück
     def runningServer(self):
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.bind((self.__sockIp,self.__sockPort))
-            s.listen()
-            conn, addr = s.accept()
+        try:
+            web_socket = self.__sock
+            web_socket.listen()
+            conn, addr = web_socket.accept()
             with conn:
                 print(f"\nEingehende Verbindung von {addr}")
                 while True:
@@ -28,8 +34,13 @@ class Server(computer.Computer):
                     conn.send(f"Datenpaket mit {len(client_msg.encode('utf-8'))} byte erhalten".encode())
                     if client_msg == "shutdown":
                         break
-                s.close()
-                
+                    elif client_msg == "exit":
+                        conn.detach()
+                        self.runningServer()
+                web_socket.close()
+        except Exception as error:
+            print(f"Fehler bei Serverausführung: {error}]")
+
 myServer = Server("750W", cpuinfo.get_cpu_info()['brand_raw'], psutil.cpu_freq().max, psutil.virtual_memory().total, platform.system(), socket.gethostbyname(socket.gethostname()), "TCP-Socket Server")
 myServer.getInfo()
 print(f"Service: {myServer._service}")

@@ -6,31 +6,37 @@ class Client(computer.Computer):
     __remotePort = 0
     #Legt die Werte für sen Socket fest
     def createSocket(self, remoteIP, remotePort):
-        self.__remoteIP = remoteIP
-        self.__remotePort = remotePort
-        print(f"Remote-IP: {myClient.__remoteIP}\nRemote-Port: {myClient.__remotePort}")
+        try:
+            self.__remoteIP = remoteIP
+            self.__remotePort = remotePort
+            web_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.__sock = web_socket
+            print(f"Remote-IP: {myClient.__remoteIP}\nRemote-Port: {myClient.__remotePort}")
+        except Exception as error:
+            print(f"Fehler bei erstellung des Sockets: {error}]")
 
     #Verbindet sich mit dem Socket und sendet Daten
     def sendData(self):
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        try:
+            web_socket = self.__sock
             usr_msg = ""
-            s.connect((self.__remoteIP, self.__remotePort))
+            web_socket.connect((self.__remoteIP, self.__remotePort))
             print(f"\nErfolgreich verbunden mit {self.__remoteIP}:{self.__remotePort}")
             while usr_msg != "shutdown":
                 usr_msg = input("Zu sendenden Text angeben:\n")
-                s.sendall(usr_msg.encode())
-                data = s.recv(1024)
+                web_socket.sendall(usr_msg.encode())
+                data = web_socket.recv(1024)
                 print(data.decode())
                 if(usr_msg == "shutdown"):    
                     print("Server wird Heruntergefahren")
                     print("Vielen dank für die Nutzung des 1337LeetSockets")
-                    s.close()
+                    web_socket.close()
                 elif(usr_msg == "exit"):
                     print("Vielen dank für die Nutzung des 1337LeetSockets")
-                    s.close()
+                    web_socket.close()
                     break
-
-        
+        except Exception as error:
+            print(f"Fehler bei Serverausführung: {error}]")
 
 myClient = Client("750W", cpuinfo.get_cpu_info()['brand_raw'], psutil.cpu_freq().max, psutil.virtual_memory().total, platform.system(), socket.gethostbyname(socket.gethostname()))
 myClient.getInfo()
