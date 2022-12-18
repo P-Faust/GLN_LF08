@@ -30,7 +30,7 @@ class Server(computer.Computer):
                 while True:
                     data = conn.recv(1024)
                     client_msg = data.decode()
-                    print(f"{datetime.datetime.now()}\nClient with IP:{addr[0]} send: {client_msg}")
+                    print(f"{datetime.datetime.now()}\nClient with IP: {addr[0]} send: {client_msg}")
                     conn.send(f"Datenpaket mit {len(client_msg.encode('utf-8'))} byte erhalten".encode())
                     if client_msg == "shutdown":
                         break
