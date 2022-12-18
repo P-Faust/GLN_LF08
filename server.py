@@ -26,7 +26,7 @@ class Server(computer.Computer):
             web_socket.listen()
             conn, addr = web_socket.accept()
             with conn:
-                print(f"\nEingehende Verbindung von {addr}")
+                print(f"\nEingehende Verbindung von {addr}:{self.__sockPort}")
                 while True:
                     data = conn.recv(1024)
                     client_msg = data.decode()
