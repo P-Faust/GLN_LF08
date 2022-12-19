@@ -13,9 +13,8 @@ class Server(computer.Computer):
         try:
             self.__sockIp = sockIP
             self.__sockPort = sockPort
-            web_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            web_socket.bind((self.__sockIp, self.__sockPort))
-            self.__sock = web_socket
+            self.web_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.web_socket.bind((self.__sockIp, self.__sockPort))
             print(f"Socket IP: {(str(self.__sockIp))}\nPort: {self.__sockPort}")
         except Exception as error:
             print(f"Fehler bei erstellung des Sockets: {error}]")
@@ -23,9 +22,8 @@ class Server(computer.Computer):
     # Startet den Server und sendet nach erhalt der Daten die Größe in Byte zurück
     def runningServer(self):
         try:
-            web_socket = self.__sock
-            web_socket.listen()
-            conn, addr = web_socket.accept()
+            self.web_socket.listen()
+            conn, addr = self.web_socket.accept()
             with conn:
                 print(f"\nEingehende Verbindung von {addr[0]}:{self.__sockPort}")
                 dateNow = datetime.datetime.now()
@@ -33,14 +31,14 @@ class Server(computer.Computer):
                 while True:
                     data = conn.recv(1024)
                     client_msg = data.decode()
-                    print(f"{formatted_time}\nClient with IP: {addr[0]} send: {client_msg}")
+                    print(f"{formatted_time}\nClient with IP: {addr[0]} sent: {client_msg}")
                     conn.send(f"Datenpaket mit {len(client_msg.encode('utf-8'))} byte erhalten".encode())
                     if client_msg == "shutdown":
                         break
                     elif client_msg == "exit":
                         conn.detach()
                         self.runningServer()
-                web_socket.close()
+                self.web_socket.close()
         except Exception as error:
             print(f"Fehler bei Serverausführung: {error}]")
 

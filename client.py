@@ -10,8 +10,7 @@ class Client(computer.Computer):
         try:
             self.__remoteIP = remoteIP
             self.__remotePort = remotePort
-            web_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.__sock = web_socket
+            self.web_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             print(f"Remote-IP: {myClient.__remoteIP}\nRemote-Port: {myClient.__remotePort}")
         except Exception as error:
             print(f"Fehler bei erstellung des Sockets: {error}]")
@@ -19,22 +18,21 @@ class Client(computer.Computer):
     #Verbindet sich mit dem Socket und sendet Daten
     def sendData(self):
         try:
-            web_socket = self.__sock
             usr_msg = ""
-            web_socket.connect((self.__remoteIP, self.__remotePort))
+            self.web_socket.connect((self.__remoteIP, self.__remotePort))
             print(f"\nErfolgreich verbunden mit {self.__remoteIP}:{self.__remotePort}")
             while usr_msg != "shutdown":
                 usr_msg = input("Zu sendenden Text angeben:\n")
-                web_socket.sendall(usr_msg.encode())
-                data = web_socket.recv(1024)
+                self.web_socket.sendall(usr_msg.encode())
+                data = self.web_socket.recv(1024)
                 print(data.decode())
                 if(usr_msg == "shutdown"):    
                     print("Server wird Heruntergefahren")
                     print("Vielen dank für die Nutzung des 1337LeetSockets")
-                    web_socket.close()
+                    self.web_socket.close()
                 elif(usr_msg == "exit"):
                     print("Vielen dank für die Nutzung des 1337LeetSockets")
-                    web_socket.close()
+                    self.web_socket.close()
                     break
         except Exception as error:
             print(f"Fehler bei Serverausführung: {error}]")
