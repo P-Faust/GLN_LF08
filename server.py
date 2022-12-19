@@ -1,3 +1,4 @@
+#!./env/bin/python
 import computer, socket, psutil, sys, platform, cpuinfo, datetime
 class Server(computer.Computer):
     _service = ""
@@ -27,10 +28,12 @@ class Server(computer.Computer):
             conn, addr = web_socket.accept()
             with conn:
                 print(f"\nEingehende Verbindung von {addr[0]}:{self.__sockPort}")
+                dateNow = datetime.datetime.now()
+                formatted_time = dateNow.strftime("%d/%m/%Y, %H:%M:%S")
                 while True:
                     data = conn.recv(1024)
                     client_msg = data.decode()
-                    print(f"{datetime.datetime.now()}\nClient with IP: {addr[0]} send: {client_msg}")
+                    print(f"{formatted_time}\nClient with IP: {addr[0]} send: {client_msg}")
                     conn.send(f"Datenpaket mit {len(client_msg.encode('utf-8'))} byte erhalten".encode())
                     if client_msg == "shutdown":
                         break

@@ -1,3 +1,4 @@
+#!./env/bin/python
 import computer, socket, psutil, platform, cpuinfo
 
 #Erstelle Klasse Client und erbe von Klasse Computer
